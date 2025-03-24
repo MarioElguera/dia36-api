@@ -12,22 +12,23 @@ const userRoutes = require('./routes/userRoutes');
 const editorialRoutes = require('./routes/editorialRoutes');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+const FRONTEND_URL = process.env.FRONTEND_URL;
+const APP_NAME = process.env.APP_NAME;
 
-const corsOptions = {
-    origin: process.env.FRONT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}
-    ;
-
-app.use(cors(corsOptions));
+app.use(
+    cors({
+        origin: FRONTEND_URL,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"]
+    })
+);
 app.use(bodyParser.json());
 
 app.set('db', db);
 
 app.get('/', (req, res) => {
-    res.send(`Bienvenido a ${process.env.APP_NAME}`);
+    res.send(`Bienvenido a ${APP_NAME}`);
 });
 
 app.use('/auth', authRoutes);
@@ -38,6 +39,6 @@ app.use('/libros', libroRoutes);
 app.use('/ventas', ventaRoutes);
 app.use('/editoriales', editorialRoutes);
 
-app.listen(port, () => {
-    console.log(`Servidor corriendo en el puerto ${port}`);
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT} | \nFRONTEND_URL: `, FRONTEND_URL);
 });

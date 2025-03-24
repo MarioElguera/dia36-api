@@ -12,7 +12,7 @@ db.connect((err) => {
         console.error('Error de conexión a la base de datos:', err.stack);
         return;
     }
-    console.log('Conexión exitosa a la base de datos MySQL | db.js');
+    console.log('Conexión exitosa a la base de datos MySQL');
 });
 
 module.exports = db;

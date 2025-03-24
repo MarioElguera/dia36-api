@@ -110,7 +110,7 @@ const updateLibro = async (id, data) => {
                 }
 
                 // Eliminamos los autores actuales del libro
-                db.query('DELETE FROM autores_libros WHERE libro_id = ?', [id], (err) => {
+                db.query('DELETE FROM Autores_Libros WHERE libro_id = ?', [id], (err) => {
                     if (err) {
                         reject(err);
                         return;
@@ -126,7 +126,7 @@ const updateLibro = async (id, data) => {
                     const insertQueries = autores.map((autor_id) => {
                         return new Promise((resolve, reject) => {
                             db.query(
-                                'INSERT INTO autores_libros (libro_id, autor_id) VALUES (?, ?)',
+                                'INSERT INTO Autores_Libros (libro_id, autor_id) VALUES (?, ?)',
                                 [id, autor_id],
                                 (err) => {
                                     if (err) {

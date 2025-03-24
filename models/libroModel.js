@@ -99,31 +99,51 @@ const updateLibro = async (id, data) => {
         const { titulo, fecha_publicacion, editorial_id, autores } = data;
 
         // Primero actualizamos el libro en la tabla Libros
-        db.query('UPDATE Libros SET titulo = ?, fecha_publicacion = ?, editorial_id = ? WHERE libro_id = ?',
-            [titulo, fecha_publicacion, editorial_id, id], (err, results) => {
+        db.query(
+            'UPDATE Libros SET titulo = ?, fecha_publicacion = ?, editorial_id = ? WHERE libro_id = ?',
+            [titulo, fecha_publicacion, editorial_id, id],
+            (err, results) => {
                 if (err) {
                     reject(err);
                     return;
                 }
 
+                // Eliminamos los autores actuales del libro
                 db.query('DELETE FROM autores_libros WHERE libro_id = ?', [id], (err) => {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    // Ahora agregamos los nuevos autores
-                    autores.forEach((autor_id) => {
-                        db.query('INSERT INTO autores_libros (libro_id, autor_id) VALUES (?, ?)', [id, autor_id], (err) => {
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+
+                    // Si no hay autores, resolvemos directamente
+                    if (autores.length === 0) {
+                        resolve({ id, ...data });
+                        return;
+                    }
+
+                    // Insertamos los nuevos autores usando Promise.all para manejar las consultas asíncronas
+                    const insertQueries = autores.map((autor_id) => {
+                        return new Promise((resolve, reject) => {
+                            db.query(
+                                'INSERT INTO autores_libros (libro_id, autor_id) VALUES (?, ?)',
+                                [id, autor_id],
+                                (err) => {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve();
+                                    }
+                                }
+                            );
                         });
                     });
 
-                    resolve({ id, ...data });
+                    Promise.all(insertQueries)
+                        .then(() => resolve({ id, ...data }))
+                        .catch((err) => reject(err));
                 });
-            });
+            }
+        );
     });
 };
 

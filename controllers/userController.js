@@ -28,7 +28,11 @@ exports.createUser = (req, res) => {
         if (err) return res.status(500).send('Error al cifrar la contraseña');
 
         User.createUser(username, hashedPassword, isAdmin, (err, result) => {
-            if (err) return res.status(500).send('Error al crear el usuario');
+            if (err) {
+                console.log("createUser | err", err);
+                return res.status(500).send('Error al crear el usuario', err);
+            }
+
             res.status(201).send('Usuario creado');
         });
     });

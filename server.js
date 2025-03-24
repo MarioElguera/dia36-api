@@ -23,6 +23,10 @@ app.use(bodyParser.json());
 
 app.set('db', db);
 
+app.get('/', (req, res) => {
+    res.send(`Bienvenido a ${process.env.APP_NAME}`);
+});
+
 app.use('/auth', authRoutes);
 app.use('/usuarios', userRoutes);
 

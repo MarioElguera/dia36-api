@@ -97,6 +97,7 @@ const createLibro = (titulo, fecha_publicacion, editorial_id) => {
 const updateLibro = async (id, data) => {
     return new Promise((resolve, reject) => {
         const { titulo, fecha_publicacion, editorial_id, autores } = data;
+        console.log("updateLibro: ", data);
 
         // Primero actualizamos el libro en la tabla Libros
         db.query(

@@ -20,7 +20,7 @@ app.use(
     cors({
         origin: FRONTEND_URL,
         methods: ["GET", "POST", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type", "Authorization"]
+        allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"]
     })
 );
 app.use(bodyParser.json());

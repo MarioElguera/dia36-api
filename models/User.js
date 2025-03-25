@@ -57,6 +57,16 @@ const updateUser = (id, updateData, callback) => {
     });
 };
 
+// Actualizar un usuario
+const updateUser2 = (id, username, password, isAdmin, callback) => {
+    const query = 'UPDATE users SET username = ?, password = ?, isAdmin = ? WHERE id = ?';
+    db.query(query, [username, password, isAdmin, id], (err, result) => {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, result);
+    });
+};
 
 // Eliminar un usuario
 const deleteUser = (id, callback) => {

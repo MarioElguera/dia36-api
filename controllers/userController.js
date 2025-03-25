@@ -53,7 +53,10 @@ exports.updateUser = (req, res) => {
     if (password) {
         // Si hay una nueva contraseña, la ciframos
         bcrypt.hash(password, 10, (err, hashedPassword) => {
-            if (err) return res.status(500).send('Error al cifrar la contraseña');
+            if (err) {
+                console.error('Error al cifrar la contraseña:', err);
+                return res.status(500).send('Error al cifrar la contraseña');
+            }
             updateData.password = hashedPassword;
 
             // Verificamos si 'isAdmin' tiene valor y lo agregamos
@@ -61,31 +64,37 @@ exports.updateUser = (req, res) => {
                 updateData.isAdmin = isAdmin;
             }
 
+            console.log('Datos a actualizar:', updateData);
+
             // Actualizar solo los campos que se incluyeron en 'updateData'
             User.updateUser(id, updateData, (err, result) => {
-                if (err) return res.status(500).send('Error al actualizar el usuario');
+                if (err) {
+                    console.error('Error al actualizar el usuario:', err);
+                    return res.status(500).send('Error al actualizar el usuario');
+                }
+                console.log('Resultado de la actualización:', result);
                 res.send('Usuario actualizado');
             });
         });
         return; // Evitamos que el resto del código se ejecute antes de la cifrado de la contraseña
     }
 
-    // Si no hay una nueva contraseña, solo actualizamos los demás campos
+    // Si no se proporcionó una contraseña, simplemente actualizar el username o isAdmin
     if (isAdmin !== undefined) {
         updateData.isAdmin = isAdmin;
     }
 
-    // Si hay algún campo para actualizar, lo hacemos
-    if (Object.keys(updateData).length > 0) {
-        User.updateUser(id, updateData, (err, result) => {
-            if (err) return res.status(500).send('Error al actualizar el usuario');
-            res.send('Usuario actualizado');
-        });
-    } else {
-        res.status(400).send('No se han proporcionado datos para actualizar');
-    }
-};
+    console.log('Datos a actualizar:', updateData);
 
+    User.updateUser(id, updateData, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar el usuario:', err);
+            return res.status(500).send('Error al actualizar el usuario');
+        }
+        console.log('Resultado de la actualización:', result);
+        res.send('Usuario actualizado');
+    });
+};
 
 // Eliminar un usuario
 exports.deleteUser = (req, res) => {

@@ -1,4 +1,3 @@
-// controllers/userController.js
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
@@ -42,16 +41,13 @@ exports.updateUser = (req, res) => {
     const { id } = req.params;
     const { username, password, isAdmin } = req.body;
 
-    // Crear un objeto con los datos a actualizar
     const updateData = {};
 
-    // Solo agregar al objeto los campos que tienen valor
     if (username) {
         updateData.username = username;
     }
 
     if (password) {
-        // Si hay una nueva contraseña, la ciframos
         bcrypt.hash(password, 10, (err, hashedPassword) => {
             if (err) {
                 console.error('Error al cifrar la contraseña:', err);
@@ -59,14 +55,12 @@ exports.updateUser = (req, res) => {
             }
             updateData.password = hashedPassword;
 
-            // Verificamos si 'isAdmin' tiene valor y lo agregamos
             if (isAdmin !== undefined) {
                 updateData.isAdmin = isAdmin;
             }
 
             console.log('Datos a actualizar:', updateData);
 
-            // Actualizar solo los campos que se incluyeron en 'updateData'
             User.updateUser(id, updateData, (err, result) => {
                 if (err) {
                     console.error('Error al actualizar el usuario:', err);
@@ -76,10 +70,9 @@ exports.updateUser = (req, res) => {
                 res.send('Usuario actualizado');
             });
         });
-        return; // Evitamos que el resto del código se ejecute antes de la cifrado de la contraseña
+        return;
     }
 
-    // Si no se proporcionó una contraseña, simplemente actualizar el username o isAdmin
     if (isAdmin !== undefined) {
         updateData.isAdmin = isAdmin;
     }

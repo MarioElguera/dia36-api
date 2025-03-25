@@ -24,7 +24,6 @@ const getAllLibros = async () => {
                 return;
             }
 
-            // Organizar los libros con sus autores en un solo objeto
             const librosMap = {};
 
             results.forEach(row => {
@@ -40,7 +39,7 @@ const getAllLibros = async () => {
                     };
                 }
 
-                if (autor_id) { // Solo agregar si hay un autor asociado
+                if (autor_id) {
                     librosMap[libro_id].autores.push({
                         autor_id,
                         nombre: autor_nombre,
@@ -87,7 +86,7 @@ const createLibro = (titulo, fecha_publicacion, editorial_id) => {
                 if (err) {
                     return reject(err);
                 }
-                resolve(results); // Devuelve el resultado completo
+                resolve(results);
             }
         );
     });
@@ -99,7 +98,6 @@ const updateLibro = async (id, data) => {
         const { titulo, fecha_publicacion, editorial_id, autores } = data;
         console.log("updateLibro: ", data);
 
-        // Primero actualizamos el libro en la tabla Libros
         db.query(
             'UPDATE Libros SET titulo = ?, fecha_publicacion = ?, editorial_id = ? WHERE libro_id = ?',
             [titulo, fecha_publicacion, editorial_id, id],
@@ -109,20 +107,17 @@ const updateLibro = async (id, data) => {
                     return;
                 }
 
-                // Eliminamos los autores actuales del libro
                 db.query('DELETE FROM Autores_Libros WHERE libro_id = ?', [id], (err) => {
                     if (err) {
                         reject(err);
                         return;
                     }
 
-                    // Si no hay autores, resolvemos directamente
                     if (autores.length === 0) {
                         resolve({ id, ...data });
                         return;
                     }
 
-                    // Insertamos los nuevos autores usando Promise.all para manejar las consultas asíncronas
                     const insertQueries = autores.map((autor_id) => {
                         return new Promise((resolve, reject) => {
                             db.query(

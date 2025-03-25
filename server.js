@@ -26,7 +26,7 @@ app.use(
 app.use(bodyParser.json());
 
 app.set('db', db);
-// middleware/errorHandler.js
+
 function errorHandler(err, req, res, next) {
     console.error(err.stack);
     res.status(err.status || 500).json({

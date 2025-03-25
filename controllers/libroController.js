@@ -40,16 +40,13 @@ const createLibro = async (req, res) => {
     const { titulo, fecha_publicacion, editorial_id, autores } = req.body;
 
     try {
-        // Verificar que se seleccionen autores
         if (!autores || autores.length === 0) {
             return res.status(400).json({ error: 'Se deben seleccionar al menos un autor' });
         }
 
-        // Crear el libro
         const libro = await libroModel.createLibro(titulo, fecha_publicacion, editorial_id);
         const libro_id = libro.insertId;
 
-        // Crear las relaciones entre libro y autores (usando await)
         const results = await autoresLibrosModel.createAutoresLibros(libro_id, autores);
 
         res.status(201).json({ message: 'Libro y autores registrados con éxito', libro_id });

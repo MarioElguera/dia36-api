@@ -1,4 +1,3 @@
-// models/User.js
 const db = require('../config/db');
 
 // Crear un nuevo usuario
@@ -50,7 +49,6 @@ const updateUser = (id, updateData, callback) => {
     let setQuery = [];
     let values = [];
 
-    // Verificar qué campos están presentes y construir la consulta de forma dinámica
     if (updateData.username) {
         setQuery.push('username = ?');
         values.push(updateData.username);
@@ -61,26 +59,22 @@ const updateUser = (id, updateData, callback) => {
         values.push(updateData.password);
     }
 
-    if (updateData.isAdmin !== undefined) {  // Asegúrate de incluir isAdmin solo si tiene valor
+    if (updateData.isAdmin !== undefined) {
         setQuery.push('isAdmin = ?');
         values.push(updateData.isAdmin);
     }
 
-    // Si no hay campos para actualizar, devolvemos un error
     if (setQuery.length === 0) {
         return callback('No hay datos para actualizar');
     }
 
-    // Añadimos el ID al final de los valores
     values.push(id);
 
-    // Generar la consulta SQL
     const query = `UPDATE users SET ${setQuery.join(', ')} WHERE id = ?`;
 
     console.log('Consulta SQL:', query);
     console.log('Valores:', values);
 
-    // Ejecutar la consulta
     db.query(query, values, (err, result) => {
         if (err) {
             console.error('Error en la consulta SQL:', err);

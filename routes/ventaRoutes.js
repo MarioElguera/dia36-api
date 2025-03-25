@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const ventaController = require('../controllers/ventaController');
+const { verifyToken, verifyAdmin } = require('../controllers/authController');
 
-router.get('/', ventaController.getVentas);
-router.get('/:id', ventaController.getVenta);
-router.post('/', ventaController.createVenta);
-router.put('/:id', ventaController.updateVenta);
-router.delete('/:id', ventaController.deleteVenta);
+router.get('/', verifyToken, verifyAdmin, ventaController.getVentas);
+router.get('/:id', verifyToken, verifyAdmin, ventaController.getVenta);
+router.post('/', verifyToken, verifyAdmin, ventaController.createVenta);
+router.put('/:id', verifyToken, verifyAdmin, ventaController.updateVenta);
+router.delete('/:id', verifyToken, verifyAdmin, ventaController.deleteVenta);
 
 module.exports = router;

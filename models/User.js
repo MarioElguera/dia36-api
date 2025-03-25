@@ -46,7 +46,8 @@ const getAllUsers = (callback) => {
 };
 
 // Actualizar un usuario
-const updateUser = (id, username, password, isAdmin, callback) => {
+const updateUser = (id, updateData, callback) => {
+    const { username, password, isAdmin } = updateData;
     const query = 'UPDATE users SET username = ?, password = ?, isAdmin = ? WHERE id = ?';
     db.query(query, [username, password, isAdmin, id], (err, result) => {
         if (err) {
@@ -55,6 +56,7 @@ const updateUser = (id, username, password, isAdmin, callback) => {
         callback(null, result);
     });
 };
+
 
 // Eliminar un usuario
 const deleteUser = (id, callback) => {
